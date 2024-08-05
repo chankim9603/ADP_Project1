@@ -1,4 +1,7 @@
-import javax.persistence.*;
+package com.example.customer_management_service.entity;
+
+
+import javax.persistence.Entity;
 @Entity
 @Table(name = "customer")
 public class Customer {
