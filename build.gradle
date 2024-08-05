@@ -7,11 +7,11 @@ plugins {
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-}
+// java {
+// 	toolchain {
+// 		languageVersion = JavaLanguageVersion.of(17)
+// 	}
+// }
 
 repositories {
 	mavenCentral()
@@ -19,6 +19,9 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+  	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+  	runtimeOnly 'org.hsqldb:hsqldb'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
