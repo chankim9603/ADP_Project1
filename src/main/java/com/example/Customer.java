@@ -1,19 +1,19 @@
-package com.example.customer_management_service.entity;
+package com.example;
 
-
-import javax.persistence.Entity;
-@Entity
-@Table(name = "customer")
 public class Customer {
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private long id;
     private String name;
-    
+    private String email;    
 
-    public Customer(long id, String name) {
+    public Customer() {
+    }
+    
+    public Customer(long id, String name, String email) {
+        super();
         this.id = id;
         this.name = name;
+        this.email = email;
     }
 
     public void setID(long id) {
@@ -30,5 +30,13 @@ public class Customer {
 
     public String getName() {
         return this.name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String getEmail() {
+        return this.email;
     }
 }
