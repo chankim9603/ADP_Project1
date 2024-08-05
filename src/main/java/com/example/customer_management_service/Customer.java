@@ -1,7 +1,13 @@
+import javax.persistence.*;
+@Entity
+@Table(name = "customer")
 public class Customer {
-    long id;
-    String name;
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String name;
     
+
     public Customer(long id, String name) {
         this.id = id;
         this.name = name;
