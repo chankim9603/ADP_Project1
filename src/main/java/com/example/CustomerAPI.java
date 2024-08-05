@@ -1,6 +1,7 @@
 package com.example;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,7 @@ public class CustomerAPI {
     
 
     
-    ArrayList<Customer> customers = new ArrayList<>();
+    List<Customer> customers = new ArrayList<>();
 
     public CustomerAPI() {
         Customer chan = new Customer(1L, "Chan Woo Kim", "chankim9603@gmail.com");
@@ -43,7 +44,7 @@ public class CustomerAPI {
         for (int i = 0; i < customers.size(); i ++) {
             Customer customer = customers.get(i);
             if (customer.getID() == id) {
-                response += "" + customer.getName() + "}";
+                response += customer.getID() + ", " + customer.getName() + ", " + customer.getEmail() + "}";
                 return response;
             }
         }        
