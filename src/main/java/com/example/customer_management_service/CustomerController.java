@@ -52,9 +52,6 @@ public class CustomerController {
         // return null;
         
     }
-
-    // Update a customer.
-
     
 	// public ResponseEntity<?> updateCustomer(
 	// 		@RequestBody Customer newCustomer,
@@ -66,6 +63,9 @@ public class CustomerController {
 	// 	newCustomer = repo.save(newCustomer);
 	// 	return ResponseEntity.ok().build();
 	// }
+
+
+    // Update a customer.
 
     @PutMapping("/{customerId}")
     public Customer updateCustomer(@RequestBody Customer newCustomer, 
@@ -83,10 +83,14 @@ public class CustomerController {
 
     }
 
+    // delete a customer
+
     @DeleteMapping("/customers/deleteCustomer/{id}")
     public void deleteCustomerByID(@PathVariable int id){
         repo.deleteById(id);
     }
+
+    // insert a customer
 
     @PostMapping("/customers/insertCustomer")
     public Customer newCustomer(@RequestBody Customer newCustomer){
