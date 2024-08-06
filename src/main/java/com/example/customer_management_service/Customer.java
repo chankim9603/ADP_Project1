@@ -1,8 +1,21 @@
 package com.example.customer_management_service;
 
-public class Customer {
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
+@Entity
+@Table(name="CUSTOMERS")
+
+public class Customer {
+    @Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
     int id;
+
+    @Column(name="CUSTOMER_NAME")
     String name;
     String email;
 
