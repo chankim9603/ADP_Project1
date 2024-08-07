@@ -25,8 +25,8 @@ public class CustomerController {
     ArrayList<Customer> customers = new ArrayList<>();
 
     public CustomerController(){
-        customers.add(new Customer(1, "Harry Potter", "hpotter@gmail.com"));
-        customers.add(new Customer(2, "Sheldon Cooper", "scooper2@gmail.com"));
+        customers.add(new Customer(1, "Harry Potter", "hpotter@gmail.com", "harry"));
+        customers.add(new Customer(2, "Sheldon Cooper", "scooper2@gmail.com", "sheldon"));
     }
 
     @GetMapping
@@ -75,6 +75,7 @@ public class CustomerController {
             .map(customer -> {
                 customer.setName(newCustomer.getName());
                 customer.setEmail(newCustomer.getEmail());
+                customer.setPassword(newCustomer.getPassword());
                 return repo.save(customer);
             })
             .orElseGet(() -> {
