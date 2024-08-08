@@ -52,6 +52,13 @@ public class CustomerController {
         // return null;
         
     }
+
+    @GetMapping("/customers/name/{name}")
+    public ResponseEntity<Customer> getCustomerByName(@PathVariable("name") String name) {
+        return repo.findByName(name)
+                   .map(customer -> ResponseEntity.ok().body(customer))
+                   .orElseGet(() -> ResponseEntity.notFound().build());
+    }
     
 	// public ResponseEntity<?> updateCustomer(
 	// 		@RequestBody Customer newCustomer,
