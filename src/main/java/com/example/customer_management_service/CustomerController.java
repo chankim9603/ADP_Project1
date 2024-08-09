@@ -12,8 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/customers")
@@ -29,31 +34,30 @@ public class CustomerController {
         customers.add(new Customer(2, "Sheldon Cooper", "scooper2@gmail.com", "sheldon"));
     }
 
-    @GetMapping
-    public String welcome(){
-        return "Welcome to the Customer Management!";
+    @GetMapping("/welcome")
+    public ResponseEntity<String> welcome(){
+        return ResponseEntity.ok("Welcome to the Customer Management!");
     }
     // Get all customers.
-    @GetMapping("/customers")
-    public List<Customer> getAllCustomers(){
-        return repo.findAll();
-
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAllCustomers(
+        @RequestHeader(value = "security", required = true) String security
+    ){
+        List<Customer> customers = repo.findAll();
+        return ResponseEntity.ok(customers);
     }
     // Get a customer by id.
-    @GetMapping("/customers/{id}")
-    public Optional<Customer> getCustomerbyID(@PathVariable("id") int id){
-        return repo.findById(id);
-        // type mismatch, so changed to <optional>
-        // for(Customer customer: customers){
-        //     if(customer.getId() == id){
-        //         return customer;
-        //     }
-        // }
-        // return null;
-        
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getCustomerById(
+        @PathVariable("id") int id,
+        @RequestHeader(value = "security", required = true) String security
+    ){
+        return repo.findById(id)
+                   .map(customer -> ResponseEntity.ok().body(customer))
+                   .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/customers/name/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<Customer> getCustomerByName(@PathVariable("name") String name) {
         return repo.findByName(name)
                    .map(customer -> ResponseEntity.ok().body(customer))
@@ -75,36 +79,51 @@ public class CustomerController {
     // Update a customer.
 
     @PutMapping("/{customerId}")
-    public Customer updateCustomer(@RequestBody Customer newCustomer, 
-    @PathVariable("customerId") int customerId){
-
+    public ResponseEntity<Customer> updateCustomer(
+        @RequestBody Customer newCustomer, 
+        @PathVariable("customerId") int customerId,
+        @RequestHeader(value = "security", required = true) String security
+    ){
         return repo.findById(customerId)
-            .map(customer -> {
-                customer.setName(newCustomer.getName());
-                customer.setEmail(newCustomer.getEmail());
-                customer.setPassword(newCustomer.getPassword());
-                return repo.save(customer);
-            })
-            .orElseGet(() -> {
-                return repo.save(newCustomer);
-            });
-
+                   .map(customer -> {
+                       customer.setName(newCustomer.getName());
+                       customer.setEmail(newCustomer.getEmail());
+                       customer.setPassword(newCustomer.getPassword());
+                       Customer updatedCustomer = repo.save(customer);
+                       return ResponseEntity.ok(updatedCustomer);
+                   })
+                   .orElseGet(() -> {
+                       Customer savedCustomer = repo.save(newCustomer);
+                       return ResponseEntity.ok(savedCustomer);
+                   });
     }
 
     // delete a customer
 
-    @DeleteMapping("/customers/deleteCustomer/{id}")
-    public void deleteCustomerByID(@PathVariable int id){
-        repo.deleteById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCustomerById(
+        @PathVariable int id,
+        @RequestHeader(value = "security", required = true) String security
+    ){
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // insert a customer
 
-    @PostMapping("/customers/insertCustomer")
-    public Customer newCustomer(@RequestBody Customer newCustomer){
-        return repo.save(newCustomer);
+    @PostMapping
+    public ResponseEntity<Customer> newCustomer(
+        @RequestBody Customer newCustomer
+    ){
+        Customer savedCustomer = repo.save(newCustomer);
+        return ResponseEntity
+            .status(201)
+            .body(savedCustomer);
     }
-
     
 
 
