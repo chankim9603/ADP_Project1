@@ -1,6 +1,7 @@
 package com.example.customer_management_service;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import org.hibernate.annotations.Comment;
 import org.springframework.core.annotation.Order;
@@ -27,14 +28,16 @@ public class AuthToken implements Filter{
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		String uri = req.getRequestURI();
+		String method = req.getMethod();
 		
-		if(  
-	       uri.equals("/api/customers/customers/insertCustomer") || uri.equals("/api/customers/customers/name/")
-	       ) {
+		if ((!uri.startsWith("/api/customers") || uri.startsWith("/api/customers/name/")) ||
+    		(!method.equals("GET") && !method.equals("PUT") && !method.equals("DELETE"))) {
 			chain.doFilter(request, response);
 			return;			
 		}else{
-			String authheader = req.getHeader("authorization");
+			
+
+			String authheader = req.getHeader("security");
 			if(authheader != null && authheader.length() > 7 ) {
                 String jwt_token = authheader.substring(7, authheader.length());
                 if(JWTHelper.verifyToken(jwt_token)) {
